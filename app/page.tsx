@@ -251,98 +251,54 @@ export default function DashboardPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <header className="sticky top-0 z-10 flex items-center justify-between px-6 py-4 bg-background border-b">
+      <header className="sticky top-0 z-10 flex flex-col sm:flex-row items-start sm:items-center justify-between px-4 sm:px-6 py-4 bg-background border-b space-y-3 sm:space-y-0">
         <div className="flex items-center">
-          <h1 className="text-2xl font-semibold text-foreground">
-            IoT Dashboard
-          </h1>
+          <h1 className="text-xl sm:text-2xl font-semibold text-foreground">IoT Dashboard</h1>
         </div>
-        <div className="flex items-center space-x-4">
-          <div className="relative">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center space-y-2 sm:space-y-0 sm:space-x-4 w-full sm:w-auto">
+          <div className="relative flex-grow sm:flex-grow-0">
             <Search className="absolute left-2 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <Input
               type="search"
               placeholder="Search devices..."
-              className="pl-8 w-64 bg-background"
+              className="pl-8 w-full sm:w-64 bg-background"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
-          <Select value={filterType} onValueChange={setFilterType}>
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Filter by type" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="All">All Types</SelectItem>
-              <SelectItem value="Temperature">Temperature</SelectItem>
-              <SelectItem value="Humidity">Humidity</SelectItem>
-              <SelectItem value="Pressure">Pressure</SelectItem>
-              <SelectItem value="CO2">CO2</SelectItem>
-              <SelectItem value="Light">Light</SelectItem>
-            </SelectContent>
-          </Select>
-          <Select value={filterLocation} onValueChange={setFilterLocation}>
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Filter by location" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="All">All Locations</SelectItem>
-              <SelectItem value="Office">Office</SelectItem>
-              <SelectItem value="Warehouse">Warehouse</SelectItem>
-              <SelectItem value="Production Floor">Production Floor</SelectItem>
-              <SelectItem value="Server Room">Server Room</SelectItem>
-              <SelectItem value="Outdoor">Outdoor</SelectItem>
-            </SelectContent>
-          </Select>
-          <Dialog open={showNotifications} onOpenChange={setShowNotifications}>
-            <DialogTrigger asChild>
-              <Button variant="ghost" size="icon">
-                <Bell className="h-5 w-5" />
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-[425px]">
-              <DialogHeader>
-                <DialogTitle>Notifications</DialogTitle>
-                <DialogDescription>
-                  Recent alerts and updates from your IoT devices.
-                </DialogDescription>
-              </DialogHeader>
-              <div className="space-y-4 mt-4">
-                {notifications.map((notification) => (
-                  <div
-                    key={notification.id}
-                    className="flex items-start space-x-2"
-                  >
-                    <div
-                      className={`w-2 h-2 mt-2 rounded-full ${
-                        notification.type === "alert"
-                          ? "bg-red-500"
-                          : notification.type === "warning"
-                          ? "bg-yellow-500"
-                          : "bg-blue-500"
-                      }`}
-                    />
-                    <div>
-                      <p className="text-sm font-medium">
-                        {notification.message}
-                      </p>
-                      <p className="text-xs text-muted-foreground">
-                        {notification.timestamp}
-                      </p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </DialogContent>
-          </Dialog>
-          <Button variant="ghost" size="icon">
-            <User className="h-5 w-5" />
-          </Button>
+          <div className="flex items-center space-x-2 sm:space-x-4">
+            <Select value={filterType} onValueChange={setFilterType}>
+              <SelectTrigger className="w-[140px] sm:w-[180px]">
+                <SelectValue placeholder="Filter by type" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="All">All Types</SelectItem>
+                <SelectItem value="Temperature">Temperature</SelectItem>
+                <SelectItem value="Humidity">Humidity</SelectItem>
+                <SelectItem value="Pressure">Pressure</SelectItem>
+                <SelectItem value="CO2">CO2</SelectItem>
+                <SelectItem value="Light">Light</SelectItem>
+              </SelectContent>
+            </Select>
+            <Select value={filterLocation} onValueChange={setFilterLocation}>
+              <SelectTrigger className="w-[140px] sm:w-[180px]">
+                <SelectValue placeholder="Filter by location" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="All">All Locations</SelectItem>
+                <SelectItem value="Office">Office</SelectItem>
+                <SelectItem value="Warehouse">Warehouse</SelectItem>
+                <SelectItem value="Production Floor">Production Floor</SelectItem>
+                <SelectItem value="Server Room">Server Room</SelectItem>
+                <SelectItem value="Outdoor">Outdoor</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
         </div>
       </header>
 
-      <main className="p-6 space-y-6">
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      <main className="p-4 sm:p-6 space-y-6">
+        <div className="grid gap-4 grid-cols-2 md:grid-cols-2 lg:grid-cols-4">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">
@@ -397,13 +353,13 @@ export default function DashboardPage() {
           </Card>
         </div>
 
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          <Card className="col-span-2">
+        <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+          <Card className="col-span-1 md:col-span-2">
             <CardHeader>
               <CardTitle>Temperature & Humidity Trends</CardTitle>
             </CardHeader>
-            <CardContent>
-              <ResponsiveContainer width="100%" height={300}>
+            <CardContent className="h-[300px] sm:h-[400px]">
+              <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={combinedData}>
                   <XAxis dataKey="time" />
                   <YAxis yAxisId="left" />
@@ -432,8 +388,8 @@ export default function DashboardPage() {
             <CardHeader>
               <CardTitle>Energy Consumption</CardTitle>
             </CardHeader>
-            <CardContent>
-              <ResponsiveContainer width="100%" height={300}>
+            <CardContent className="h-[300px] sm:h-[400px]">
+              <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={energyConsumptionData}>
                   <XAxis dataKey="device" />
                   <YAxis />
@@ -451,59 +407,68 @@ export default function DashboardPage() {
             <CardTitle>Recent IoT Data</CardTitle>
           </CardHeader>
           <CardContent>
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Device ID</TableHead>
-                  <TableHead>Sensor Type</TableHead>
-                  <TableHead>Location</TableHead>
-                  <TableHead>Value</TableHead>
-                  <TableHead>Timestamp</TableHead>
-                  <TableHead>Status</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {currentItems.map((row) => (
-                  <TableRow key={row.id}>
-                    <TableCell>{row.deviceId}</TableCell>
-                    <TableCell>{row.sensorType}</TableCell>
-                    <TableCell>{row.location}</TableCell>
-                    <TableCell>{row.value}</TableCell>
-                    <TableCell>{row.timestamp}</TableCell>
-                    <TableCell>
-                      <span
-                        className={`px-2 py-1 rounded-full text-xs font-medium ${
-                          row.status === "Normal"
-                            ? "bg-green-100 text-green-800"
-                            : "bg-yellow-100 text-yellow-800"
-                        }`}
-                      >
-                        {row.status}
-                      </span>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-            <div className="flex items-center justify-end space-x-2 py-4">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => paginate(currentPage - 1)}
-                disabled={currentPage === 1}
-              >
-                <ChevronLeft className="h-4 w-4" />
-                Previous
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => paginate(currentPage + 1)}
-                disabled={indexOfLastItem >= filteredData.length}
-              >
-                Next
-                <ChevronRight className="h-4 w-4" />
-              </Button>
+            <div className="overflow-x-auto -mx-6">
+              <div className="inline-block min-w-full align-middle px-6">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Device ID</TableHead>
+                      <TableHead>Sensor Type</TableHead>
+                      <TableHead>Location</TableHead>
+                      <TableHead>Value</TableHead>
+                      <TableHead>Timestamp</TableHead>
+                      <TableHead>Status</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {currentItems.map((row) => (
+                      <TableRow key={row.id}>
+                        <TableCell>{row.deviceId}</TableCell>
+                        <TableCell>{row.sensorType}</TableCell>
+                        <TableCell>{row.location}</TableCell>
+                        <TableCell>{row.value}</TableCell>
+                        <TableCell>{row.timestamp}</TableCell>
+                        <TableCell>
+                          <span
+                            className={`px-2 py-1 rounded-full text-xs font-medium ${
+                              row.status === "Normal"
+                                ? "bg-green-100 text-green-800"
+                                : "bg-yellow-100 text-yellow-800"
+                            }`}
+                          >
+                            {row.status}
+                          </span>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            </div>
+            <div className="flex flex-col sm:flex-row items-center justify-between space-y-2 sm:space-y-0 py-4">
+              <div className="text-sm text-muted-foreground">
+                Showing {indexOfFirstItem + 1} to {Math.min(indexOfLastItem, filteredData.length)} of {filteredData.length} entries
+              </div>
+              <div className="flex items-center space-x-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => paginate(currentPage - 1)}
+                  disabled={currentPage === 1}
+                >
+                  <ChevronLeft className="h-4 w-4" />
+                  <span className="hidden sm:inline">Previous</span>
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => paginate(currentPage + 1)}
+                  disabled={indexOfLastItem >= filteredData.length}
+                >
+                  <span className="hidden sm:inline">Next</span>
+                  <ChevronRight className="h-4 w-4" />
+                </Button>
+              </div>
             </div>
           </CardContent>
         </Card>
