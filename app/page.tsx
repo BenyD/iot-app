@@ -1,3 +1,5 @@
+// Beny
+
 "use client";
 
 import { useState, useEffect } from "react";
@@ -138,7 +140,10 @@ const ALERT_COUNT = mockIoTData.filter(
   (item) => item.status === "Warning" || item.status === "Alert"
 ).length;
 
-const aggregateData = (data: { timestamp: string; value: string }[], key: string) => {
+const aggregateData = (
+  data: { timestamp: string; value: string }[],
+  key: string
+) => {
   return data
     .reduce((acc: { time: string; [key: string]: string | number }[], curr) => {
       const existingEntry = acc.find(
@@ -176,10 +181,13 @@ const energyConsumptionData = [
   { device: "Servers", consumption: 550 },
   { device: "Other", consumption: 150 },
 ];
-const locationDistribution = mockIoTData.reduce<Record<string, number>>((acc, curr) => {
-  acc[curr.location] = (acc[curr.location] || 0) + 1;
-  return acc;
-}, {});
+const locationDistribution = mockIoTData.reduce<Record<string, number>>(
+  (acc, curr) => {
+    acc[curr.location] = (acc[curr.location] || 0) + 1;
+    return acc;
+  },
+  {}
+);
 
 const locationData = Object.entries(locationDistribution).map(
   ([name, value]) => ({ name, value })
@@ -268,7 +276,7 @@ export default function DashboardPage() {
   }, [searchTerm, filterType, filterLocation]);
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background flex flex-col">
       <header className="sticky top-0 z-10 flex items-center justify-between px-4 py-2 bg-background border-b lg:px-6">
         <div className="flex items-center">
           <h1 className="text-xl font-semibold text-foreground lg:text-2xl">
@@ -374,7 +382,8 @@ export default function DashboardPage() {
                 {userDetails.students.map((student) => (
                   <div key={student.id} className="flex items-start space-x-2">
                     <p className="text-sm">
-                      <span className="font-medium">{student.id}</span> - {student.name}
+                      <span className="font-medium">{student.id}</span> -{" "}
+                      {student.name}
                     </p>
                   </div>
                 ))}
@@ -385,7 +394,7 @@ export default function DashboardPage() {
         </div>
       </header>
 
-      <main className="p-4 space-y-4 lg:p-6 lg:space-y-6">
+      <main className="p-4 space-y-4 lg:p-6 lg:space-y-6 flex-grow">
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -672,6 +681,12 @@ export default function DashboardPage() {
           </TabsContent>
         </Tabs>
       </main>
+
+      <footer className="border-t py-4 px-4 lg:px-6">
+        <div className="text-center text-sm text-muted-foreground">
+          © {new Date().getFullYear()} IoT Dashboard. All rights reserved.
+        </div>
+      </footer>
     </div>
   );
 }
