@@ -230,12 +230,22 @@ const notifications = [
   },
 ];
 
+// Add these constants near the top of the file, after the imports
+const userDetails = {
+  batch: "34",
+  students: [
+    { id: "22112202", name: "Vishwavaran V" },
+    { id: "22112219", name: "Vikash Kanna R" },
+  ],
+};
+
 export default function DashboardPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
   const [filterType, setFilterType] = useState("All");
   const [filterLocation, setFilterLocation] = useState("All");
   const [showNotifications, setShowNotifications] = useState(false);
+  const [showUserDetails, setShowUserDetails] = useState(false);
 
   const filteredData = mockIoTData.filter(
     (item) =>
@@ -347,10 +357,31 @@ export default function DashboardPage() {
               </div>
             </DialogContent>
           </Dialog>
+          <Dialog open={showUserDetails} onOpenChange={setShowUserDetails}>
+            <DialogTrigger asChild>
+              <Button variant="ghost" size="icon">
+                <User className="h-5 w-5" />
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-[425px]">
+              <DialogHeader>
+                <DialogTitle>User Details</DialogTitle>
+                <DialogDescription>
+                  Batch {userDetails.batch} Student Information
+                </DialogDescription>
+              </DialogHeader>
+              <div className="space-y-4 mt-4">
+                {userDetails.students.map((student) => (
+                  <div key={student.id} className="flex items-start space-x-2">
+                    <p className="text-sm">
+                      <span className="font-medium">{student.id}</span> - {student.name}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </DialogContent>
+          </Dialog>
           <ThemeToggle />
-          <Button variant="ghost" size="icon">
-            <User className="h-5 w-5" />
-          </Button>
         </div>
       </header>
 
