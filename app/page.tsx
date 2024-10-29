@@ -28,15 +28,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  Bell,
-  ChevronLeft,
-  ChevronRight,
-  Search,
-  User,
-  Moon,
-  Sun,
-} from "lucide-react";
+import { Bell, ChevronLeft, ChevronRight, Search, User } from "lucide-react";
 import {
   Bar,
   BarChart,
@@ -128,7 +120,8 @@ const generateMockData = (count: number) => {
       sensorType: type,
       location: location,
       value: `${value}${unit}`,
-      rawValue: parseFloat(value),
+      rawValue:
+        value === "Detected" || value === "None" ? 0 : parseFloat(value || "0"),
       timestamp: timestamp.toISOString().replace("T", " ").substr(0, 19),
       status: status,
     };
@@ -138,19 +131,28 @@ const generateMockData = (count: number) => {
 // Move the mock data generation outside the component and make it stable
 const mockIoTData = generateMockData(1000);
 const TOTAL_DEVICES = mockIoTData.length;
-const ACTIVE_SENSORS = mockIoTData.filter(item => item.status === "Normal").length;
-const ALERT_COUNT = mockIoTData.filter(item => item.status === "Warning" || item.status === "Alert").length;
+const ACTIVE_SENSORS = mockIoTData.filter(
+  (item) => item.status === "Normal"
+).length;
+const ALERT_COUNT = mockIoTData.filter(
+  (item) => item.status === "Warning" || item.status === "Alert"
+).length;
 
-const aggregateData = (data: any[], key: string) => {
+const aggregateData = (data: { timestamp: string; value: string }[], key: string) => {
   return data
-    .reduce((acc, curr) => {
+    .reduce((acc: { time: string; [key: string]: string | number }[], curr) => {
       const existingEntry = acc.find(
         (item) => item.time === curr.timestamp.substr(11, 5)
       );
       if (existingEntry) {
-        existingEntry[key] = curr.rawValue;
+        const numericValue = parseFloat(curr.value.replace(/[^0-9.-]/g, ""));
+        existingEntry[key] = numericValue;
       } else {
-        acc.push({ time: curr.timestamp.substr(11, 5), [key]: curr.rawValue });
+        const numericValue = parseFloat(curr.value.replace(/[^0-9.-]/g, ""));
+        acc.push({
+          time: curr.timestamp.substr(11, 5),
+          [key]: numericValue,
+        });
       }
       return acc;
     }, [])
@@ -161,6 +163,7 @@ const temperatureData = aggregateData(
   mockIoTData.filter((item) => item.sensorType === "Temperature"),
   "temperature"
 );
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const humidityData = aggregateData(
   mockIoTData.filter((item) => item.sensorType === "Humidity"),
   "humidity"
@@ -173,8 +176,7 @@ const energyConsumptionData = [
   { device: "Servers", consumption: 550 },
   { device: "Other", consumption: 150 },
 ];
-
-const locationDistribution = mockIoTData.reduce((acc, curr) => {
+const locationDistribution = mockIoTData.reduce<Record<string, number>>((acc, curr) => {
   acc[curr.location] = (acc[curr.location] || 0) + 1;
   return acc;
 }, {});
@@ -356,20 +358,28 @@ export default function DashboardPage() {
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Total Devices</CardTitle>
+              <CardTitle className="text-sm font-medium">
+                Total Devices
+              </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{TOTAL_DEVICES}</div>
-              <p className="text-xs text-muted-foreground">+10% from last month</p>
+              <p className="text-xs text-muted-foreground">
+                +10% from last month
+              </p>
             </CardContent>
           </Card>
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Active Sensors</CardTitle>
+              <CardTitle className="text-sm font-medium">
+                Active Sensors
+              </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{ACTIVE_SENSORS}</div>
-              <p className="text-xs text-muted-foreground">+5% from last week</p>
+              <p className="text-xs text-muted-foreground">
+                +5% from last week
+              </p>
             </CardContent>
           </Card>
           <Card>
@@ -389,7 +399,9 @@ export default function DashboardPage() {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{ALERT_COUNT}</div>
-              <p className="text-xs text-muted-foreground">-2% from yesterday</p>
+              <p className="text-xs text-muted-foreground">
+                -2% from yesterday
+              </p>
             </CardContent>
           </Card>
         </div>
